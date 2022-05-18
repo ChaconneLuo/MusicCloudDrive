@@ -7,6 +7,13 @@
     <artifactId>music-cloud-drive</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1</version>
+    <modules>
+        <module>gateway</module>
+        <module>account</module>
+        <module>player</module>
+        <module>core</module>
+        <module>resources</module>
+    </modules>
 
     <properties>
         <java.version>17</java.version>
