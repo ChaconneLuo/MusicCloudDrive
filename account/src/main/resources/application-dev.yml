@@ -1,0 +1,10 @@
+server:
+  port: 8200
+
+spring:
+  application:
+    name: account-service
+  datasource:
+    url: jdbc:mysql:///music_cloud_drive_account
+    username: root
+    password: plf,.123
