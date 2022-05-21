@@ -35,7 +35,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Cookie createCookie(String token, String accountJson) {
+    public Cookie create(String accountId, String seckey, String accountJson) {
+        var token = getJWT(accountId, seckey);
         redisTemplate.opsForValue().set(Const.TOKEN_PREFIX + token, accountJson, Const.TOKEN_OVERTIME, TimeUnit.SECONDS);
         var cookie = new Cookie(Const.TOKEN_COOKIE_NAME, token);
         cookie.setPath("/");

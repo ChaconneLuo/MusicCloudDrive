@@ -55,10 +55,9 @@ public class AccountController {
                 log.error("Secret Key Query Error");
                 return Result.error().msg("Server Error").build();
             }
-            resp.addCookie(
-                    tokenService.createCookie(
-                            tokenService.getJWT(String.valueOf(account.getAccountId()), seckey),    //TOKEN
-                            objectMapper.writeValueAsString(account)));             //JSON
+            resp.addCookie(tokenService.create(String.valueOf(account.getAccountId())
+                    , seckey
+                    , objectMapper.writeValueAsString(account)));
             return Result.ok(Map.of("status", MsgMapping.LOGIN_SUCCESS));
         } else {
             return Result.ok(Map.of("status", MsgMapping.USERNAME_OR_PASSWORD_ERROR));
