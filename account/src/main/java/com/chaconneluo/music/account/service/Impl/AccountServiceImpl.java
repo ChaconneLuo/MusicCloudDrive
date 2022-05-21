@@ -1,12 +1,15 @@
-package com.chaconneluo.music.service.Impl;
+package com.chaconneluo.music.account.service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.chaconneluo.music.dao.AccountDao;
-import com.chaconneluo.music.pojo.Account;
-import com.chaconneluo.music.service.AccountService;
+import com.chaconneluo.music.account.common.Const;
+import com.chaconneluo.music.account.dao.AccountDao;
+import com.chaconneluo.music.account.pojo.Account;
+import com.chaconneluo.music.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 /**
  * @author ChaconneLuo
@@ -20,7 +23,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Boolean register(Account account) {
-        return accountDao.insert(account)>0;
+        var date = LocalDateTime.now();
+        account.setGmtCreate(date);
+        account.setGmtModified(date);
+        account.setAccountId(accountDao.getMaxId().add(BigInteger.valueOf(Const.ACCOUNT_ID_OFFSET + 1)));
+        return accountDao.insert(account) > 0;
     }
 
     @Override

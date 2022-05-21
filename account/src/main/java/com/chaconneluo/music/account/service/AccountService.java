@@ -1,6 +1,6 @@
-package com.chaconneluo.music.service;
+package com.chaconneluo.music.account.service;
 
-import com.chaconneluo.music.pojo.Account;
+import com.chaconneluo.music.account.pojo.Account;
 
 public interface AccountService {
 

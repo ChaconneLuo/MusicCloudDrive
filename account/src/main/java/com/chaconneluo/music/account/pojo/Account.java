@@ -1,4 +1,4 @@
-package com.chaconneluo.music.pojo;
+package com.chaconneluo.music.account.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

@@ -1,4 +1,4 @@
-package com.chaconneluo.music.util;
+package com.chaconneluo.music.account.util;
 
 /**
  * @author ChaconneLuo

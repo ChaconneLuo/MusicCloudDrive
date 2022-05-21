@@ -8,3 +8,5 @@ spring:
     url: jdbc:mysql:///music_cloud_drive_account
     username: root
     password: plf,.123
+  redis:
+    database: 0
