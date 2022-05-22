@@ -43,4 +43,9 @@ public class TokenServiceImpl implements TokenService {
         return cookie;
     }
 
+    @Override
+    public void deleteToken(String token) {
+        redisTemplate.delete(Const.TOKEN_PREFIX + token);
+    }
+
 }

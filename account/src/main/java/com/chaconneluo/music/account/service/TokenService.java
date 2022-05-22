@@ -6,4 +6,6 @@ public interface TokenService {
     String getJWT(String accountId, String seckey);
 
     Cookie create(String accountId, String seckey, String accountJson);
+
+    void deleteToken(String token);
 }

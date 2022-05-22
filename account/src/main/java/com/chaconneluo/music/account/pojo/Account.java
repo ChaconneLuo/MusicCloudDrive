@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  */
 
 @Data
-@JsonIgnoreProperties({"id","gmtCreate","gmtModified"})
+@JsonIgnoreProperties({"id","gmtCreate","gmtModified","password"})
 @TableName("t_account")
 public class Account {
 
