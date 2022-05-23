@@ -25,43 +25,48 @@ public class SecurityServiceImpl implements SecurityService {
 
     private final StringRedisTemplate redisTemplate;
 
-    public static String generalJWT(String email, String seckey) {
+    public static String generalJWT(String email, String secretKey) {
         return JWT.create().withClaim("email", email)
                 .withExpiresAt(Date.from(LocalDateTime.now()
                         .plusSeconds(Const.TOKEN_OVERTIME)
                         .atZone(ZoneId.systemDefault())
                         .toInstant()))
-                .sign(Algorithm.HMAC256(seckey));
+                .sign(Algorithm.HMAC256(secretKey));
     }
 
     @Override
-    public String getSeckey() {
+    public String getSecretKey() {
         return redisTemplate.opsForValue().get(Const.APPID);
     }
 
     @Override
-    public String updateTokenTime(String token, String seckey) {
+    public String updateToken(String token, String secretKey) {
         // redisTemplate.expire(Const.REDIS_TOKEN_PREFIX + token, Const.TOKEN_OVERTIME, TimeUnit.SECONDS);
         redisTemplate.opsForValue().set(Const.REDIS_FORBIDDEN_PREFIX + token, "", Const.TOKEN_OVERTIME, TimeUnit.SECONDS);
-        var email = redisTemplate.opsForValue().get(Const.REDIS_TOKEN_PREFIX + token);
-        redisTemplate.delete(Const.REDIS_TOKEN_PREFIX + token);
-        var newToken = generalJWT(email, getSeckey());
-        redisTemplate.opsForValue().set(Const.REDIS_TOKEN_PREFIX + newToken, email, Const.TOKEN_OVERTIME, TimeUnit.SECONDS);
+        var email = decodeEmailFromJWT(token);
+        redisTemplate.delete(Const.REDIS_TOKEN_PREFIX + email + ":" + token);
+        var newToken = generalJWT(email, getSecretKey());
+        redisTemplate.opsForValue().set(Const.REDIS_TOKEN_PREFIX + email + ":" + newToken, email, Const.TOKEN_OVERTIME, TimeUnit.SECONDS);
         return newToken;
     }
 
     @Override
     public String verifyJWT(String token) {
-        var verify = JWT.require(Algorithm.HMAC256(getSeckey())).build().verify(token);
+        var verify = JWT.require(Algorithm.HMAC256(getSecretKey())).build().verify(token);
         var forbidden = redisTemplate.opsForValue().get(Const.REDIS_FORBIDDEN_PREFIX + token);
         if (verify != null && forbidden == null) {
             var now = Instant.now();
             var expireTime = verify.getExpiresAt().toInstant();
             if (Duration.between(now, expireTime).getSeconds() <= Const.TOKEN_OVERTIME / 2) {
-                return updateTokenTime(token, getSeckey());
+                return updateToken(token, getSecretKey());
             }
             return token;
         }
         return "";
+    }
+
+    @Override
+    public String decodeEmailFromJWT(String token) {
+        return JWT.require(Algorithm.HMAC256(getSecretKey())).build().verify(token).getClaim("email").asString();
     }
 }

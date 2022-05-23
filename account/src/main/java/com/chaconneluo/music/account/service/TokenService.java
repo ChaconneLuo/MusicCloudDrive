@@ -4,9 +4,11 @@ import javax.servlet.http.Cookie;
 
 public interface TokenService {
 
-    Cookie create(String email, String seckey, String accountJson);
+    Cookie create(String email, String secretKey, String accountJson);
 
-    void deleteToken(String token);
+    void deleteAllToken(String token, String secretKey);
 
-    void writeSeckey(String appid, String seckey);
+    void deleteSingleToken(String key);
+
+    void writeSecretKey(String appid, String secretKey);
 }

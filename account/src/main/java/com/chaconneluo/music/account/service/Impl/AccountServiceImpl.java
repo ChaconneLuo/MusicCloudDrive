@@ -21,7 +21,6 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountDao accountDao;
 
-
     @Override
     public Boolean insert(Account account) {
         var date = LocalDateTime.now();
@@ -67,6 +66,5 @@ public class AccountServiceImpl implements AccountService {
         }else {
             return null;
         }
-
     }
 }

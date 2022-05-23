@@ -1,9 +1,11 @@
 package com.chaconneluo.music.gateway.service;
 
 public interface SecurityService {
-    String getSeckey();
+    String getSecretKey();
 
-    String updateTokenTime(String token, String seckey);
+    String updateToken(String token, String secretkey);
 
     String verifyJWT(String token);
+
+    String decodeEmailFromJWT(String token);
 }

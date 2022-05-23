@@ -4,7 +4,7 @@ import com.chaconneluo.music.account.common.Const;
 import com.chaconneluo.music.account.common.MsgMapping;
 import com.chaconneluo.music.account.pojo.Account;
 import com.chaconneluo.music.account.service.AccountService;
-import com.chaconneluo.music.account.service.SeckeyService;
+import com.chaconneluo.music.account.service.SecretKeyService;
 import com.chaconneluo.music.account.service.TokenService;
 import com.chaconneluo.music.account.util.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +29,7 @@ public class AccountController {
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
 
-    private final SeckeyService seckeyService;
+    private final SecretKeyService secretKeyService;
 
     @PostMapping("/register")
     public Result<Map<String, String>> register(@RequestBody Account account, HttpServletResponse resp) throws JsonProcessingException {
@@ -47,15 +47,15 @@ public class AccountController {
     public Result<Map<String, String>> login(@RequestBody Account account, HttpServletResponse resp) throws JsonProcessingException {
         var loginSuccess = accountService.check(account);
         if (loginSuccess) {
-            var seckey = seckeyService.getKey(Const.APPID);
-            if (seckey.equals("")) {
+            var secretKey = secretKeyService.getKey(Const.APPID);
+            if (secretKey.equals("")) {
                 log.error("Secret Key Query Error");
                 return Result.error().msg("Server Error").build();
             }
             resp.addCookie(tokenService.create(String.valueOf(account.getEmail())
-                    , seckey
+                    , secretKey
                     , objectMapper.writeValueAsString(account)));
-            tokenService.writeSeckey(Const.APPID, seckey);
+            tokenService.writeSecretKey(Const.APPID, secretKey);
             return Result.ok(Map.of("status", MsgMapping.LOGIN_SUCCESS));
         } else {
             return Result.ok(Map.of("status", MsgMapping.LOGIN_ERROR));
@@ -69,7 +69,12 @@ public class AccountController {
                                                     @RequestHeader("token") String token) {
         var updateSuccess = accountService.updatePassword(email, oldPassword, newPassword);
         if (updateSuccess) {
-            tokenService.deleteToken(token);
+            var secretKey = secretKeyService.getKey(Const.APPID);
+            if (secretKey.equals("")) {
+                log.error("Secret Key Query Error");
+                return Result.error().msg("Server Error").build();
+            }
+            tokenService.deleteAllToken(token,secretKey);
             return Result.ok(Map.of("status", MsgMapping.PASSWORD_EDIT_SUCCESS));
         }
         return Result.ok(Map.of("status", MsgMapping.PASSWORD_EDIT_ERROR));
@@ -82,7 +87,7 @@ public class AccountController {
                                                     HttpServletResponse resp) throws JsonProcessingException {
         var requiredAccount = accountService.updateUsername(email, newUsername);
         if (requiredAccount != null) {
-            var seckey = seckeyService.getKey(Const.APPID);
+            var seckey = secretKeyService.getKey(Const.APPID);
             if (seckey.equals("")) {
                 log.error("Secret Key Query Error");
                 return Result.error().msg("Server Error").build();

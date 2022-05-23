@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 
 @Data
 @JsonIgnoreProperties({"id","gmtCreate","gmtModified"})
-@TableName("t_seckey")
-public class Seckey {
+@TableName("t_secret_key")
+public class SecretKey {
 
     @TableId(type = IdType.AUTO)
     private BigInteger id;
 
     private String appid;
 
-    private String seckey;
+    private String secretKey;
 
     @TableField(select = false)
     private LocalDateTime gmtCreate;
