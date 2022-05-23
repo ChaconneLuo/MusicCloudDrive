@@ -15,7 +15,7 @@ spring:
           url: jdbc:mysql:///music_cloud_drive_account
           username: root
           password: plf,.123
-        seckey:
-          url: jdbc:mysql:///music_cloud_drive_seckey
+        secret_key:
+          url: jdbc:mysql:///music_cloud_drive_secret_key
           username: root
           password: plf,.123

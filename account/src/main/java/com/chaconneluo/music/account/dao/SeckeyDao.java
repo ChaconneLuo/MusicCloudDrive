@@ -6,6 +6,6 @@ import com.chaconneluo.music.account.pojo.SecretKey;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-@DS("seckey")
+@DS("secret_key")
 public interface SeckeyDao extends BaseMapper<SecretKey> {
 }
