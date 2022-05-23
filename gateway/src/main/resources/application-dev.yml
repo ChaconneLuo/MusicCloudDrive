@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: gateway-service
+  datasource:
+    url: jdbc:mysql:///music_cloud_drive_seckey
+    username: root
+    password: plf,.123
   cloud:
     nacos:
       discovery:

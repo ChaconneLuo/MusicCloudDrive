@@ -1,16 +1,7 @@
-package com.chaconneluo.music.account.common;
-
-/**
- * @author ChaconneLuo
- */
+package com.chaconneluo.music.gateway.common;
 
 public interface Const {
-
     String REDIS_TOKEN_PREFIX = "TOKEN:";
-
-    String REDIS_EMAIL_PREFIX = "EMAIL:";
-
-    String REDIS_FORBIDDEN_PREFIX = "FORBIDDEN:";
 
     Integer TOKEN_OVERTIME = 10 * 60;
 
@@ -19,4 +10,6 @@ public interface Const {
     String TOKEN_COOKIE_NAME = "token";
 
     Integer ACCOUNT_ID_OFFSET = 100000;
+
+    String REDIS_FORBIDDEN_PREFIX = "FORBIDDEN:";
 }

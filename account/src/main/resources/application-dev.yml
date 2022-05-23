@@ -4,9 +4,18 @@ server:
 spring:
   application:
     name: account-service
-  datasource:
-    url: jdbc:mysql:///music_cloud_drive_account
-    username: root
-    password: plf,.123
   redis:
     database: 0
+  datasource:
+    dynamic:
+      primary: account
+      strict: false
+      datasource:
+        account:
+          url: jdbc:mysql:///music_cloud_drive_account
+          username: root
+          password: plf,.123
+        seckey:
+          url: jdbc:mysql:///music_cloud_drive_seckey
+          username: root
+          password: plf,.123

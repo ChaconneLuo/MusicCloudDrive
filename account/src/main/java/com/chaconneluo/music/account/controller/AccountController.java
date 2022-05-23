@@ -52,9 +52,10 @@ public class AccountController {
                 log.error("Secret Key Query Error");
                 return Result.error().msg("Server Error").build();
             }
-            resp.addCookie(tokenService.create(String.valueOf(account.getAccountId())
+            resp.addCookie(tokenService.create(String.valueOf(account.getEmail())
                     , seckey
                     , objectMapper.writeValueAsString(account)));
+            tokenService.writeSeckey(Const.APPID, seckey);
             return Result.ok(Map.of("status", MsgMapping.LOGIN_SUCCESS));
         } else {
             return Result.ok(Map.of("status", MsgMapping.LOGIN_ERROR));

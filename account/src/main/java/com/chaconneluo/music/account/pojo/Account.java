@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.chaconneluo.music.account.serializer.PasswordSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 import java.math.BigInteger;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
  */
 
 @Data
-@JsonIgnoreProperties({"id","gmtCreate","gmtModified","password"})
+@JsonIgnoreProperties({"id", "gmtCreate", "gmtModified"})
 @TableName("t_account")
 public class Account {
 
@@ -28,6 +30,7 @@ public class Account {
 
     private String username;
 
+    @JsonSerialize(using = PasswordSerializer.class)
     private String password;
 
     @TableField(select = false)
