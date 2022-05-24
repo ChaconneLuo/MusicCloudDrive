@@ -28,7 +28,6 @@ public class AccountController {
     private final AccountService accountService;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
-
     private final SecretKeyService secretKeyService;
 
     @PostMapping("/register")
@@ -37,9 +36,9 @@ public class AccountController {
         var registerStatus = accountService.insert(account);
         if (registerStatus) {
             login(account, resp);
-            return Result.ok(Map.of("status", MsgMapping.REGISTER_SUCCESS));
+            return Result.ok().build();
         } else {
-            return Result.ok(Map.of("status", MsgMapping.EMAIL_REPEAT));
+            return Result.error(MsgMapping.EMAIL_REPEAT);
         }
     }
 
@@ -56,9 +55,9 @@ public class AccountController {
                     , secretKey
                     , objectMapper.writeValueAsString(account)));
             tokenService.writeSecretKey(Const.APPID, secretKey);
-            return Result.ok(Map.of("status", MsgMapping.LOGIN_SUCCESS));
+            return Result.ok().build();
         } else {
-            return Result.ok(Map.of("status", MsgMapping.LOGIN_ERROR));
+            return Result.error(MsgMapping.LOGIN_ERROR);
         }
     }
 
@@ -75,9 +74,9 @@ public class AccountController {
                 return Result.error().msg("Server Error").build();
             }
             tokenService.deleteAllToken(token,secretKey);
-            return Result.ok(Map.of("status", MsgMapping.PASSWORD_EDIT_SUCCESS));
+            return Result.ok().build();
         }
-        return Result.ok(Map.of("status", MsgMapping.PASSWORD_EDIT_ERROR));
+        return Result.error(MsgMapping.PASSWORD_EDIT_ERROR);
     }
 
     @PostMapping("/editUsername")
@@ -95,9 +94,9 @@ public class AccountController {
             resp.addCookie(tokenService.create(String.valueOf(requiredAccount.getAccountId())
                     , seckey
                     , objectMapper.writeValueAsString(requiredAccount)));
-            return Result.ok(Map.of("status", MsgMapping.USERNAME_EDIT_SUCCESS));
+            return Result.ok().build();
         }
-        return Result.ok(Map.of("status", MsgMapping.USERNAME_EDIT_ERROR));
+        return Result.error(MsgMapping.USERNAME_EDIT_ERROR);
     }
 
 }
