@@ -1,0 +1,9 @@
+server:
+  port: 8300
+
+spring:
+  application:
+    name: core-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/song_menu

@@ -1,0 +1,11 @@
+server:
+  port: 8400
+
+spring:
+  application:
+    name: resource-service
+  servlet:
+    multipart:
+      max-file-size: 512MB
+      max-request-size: 1024MB
+

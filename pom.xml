@@ -12,7 +12,7 @@
         <module>account</module>
         <module>player</module>
         <module>core</module>
-        <module>resources</module>
+        <module>resource</module>
     </modules>
 
     <properties>
