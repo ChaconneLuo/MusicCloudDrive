@@ -8,4 +8,12 @@ spring:
     multipart:
       max-file-size: 512MB
       max-request-size: 1024MB
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/music_cloud_drive
+minio:
+  endpoint: http://localhost:9000
+  accessKey: minioadmin
+  secretKey: minioadmin
+  bucketName: music-cloud-drive
 

@@ -19,6 +19,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <okhttp3.version>4.9.3</okhttp3.version>
         <spring-boot.version>2.6.7</spring-boot.version>
         <spring-cloud.version>2021.0.2</spring-cloud.version>
         <alibaba-cloud.version>2021.1</alibaba-cloud.version>
