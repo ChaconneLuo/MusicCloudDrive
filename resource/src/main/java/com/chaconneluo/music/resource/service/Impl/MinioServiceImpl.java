@@ -38,7 +38,7 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public String uploadFile(String email, MultipartFile file) {
+    public Boolean uploadFile(String email, String uuid, MultipartFile file) {
         var fileName = file.getOriginalFilename();
         assert fileName != null;
         try {
@@ -46,14 +46,15 @@ public class MinioServiceImpl implements MinioService {
                     PutObjectArgs
                             .builder()
                             .bucket(bucketName)
-                            .object(fileName)
+                            .object(uuid)
                             .stream(file.getInputStream(), file.getSize(), -1)
                             .contentType(file.getContentType())
                             .build());
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return fileName;
+        return true;
     }
 
 }

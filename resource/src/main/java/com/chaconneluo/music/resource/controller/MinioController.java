@@ -15,11 +15,11 @@ public class MinioController {
 
     private final MinioService minioService;
 
-    @PostMapping("/{email}/upload")
-    public void uploadFile(@PathVariable("email") String email, @RequestPart("any") MultipartFile[] mfs) {
+    @PostMapping("/{email}/upload/{uuid}")
+    public void uploadFile(@PathVariable("email") String email, @PathVariable("uuid") String uuid, @RequestPart("any") MultipartFile[] mfs) {
         minioService.checkBucket();
         for (var file : mfs) {
-            minioService.uploadFile(email, file);
+            minioService.uploadFile(email, uuid, file);
         }
     }
 
