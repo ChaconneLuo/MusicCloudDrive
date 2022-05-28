@@ -1,11 +1,19 @@
 package com.chaconneluo.music.resource.service.Impl;
 
+import com.chaconneluo.music.resource.pojo.Music;
+import com.chaconneluo.music.resource.pojo.User;
 import com.chaconneluo.music.resource.service.MinioService;
+import com.chaconneluo.music.resource.service.MusicService;
+import com.chaconneluo.music.resource.service.UserService;
 import io.minio.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author ChaconneLuo
@@ -16,6 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class MinioServiceImpl implements MinioService {
 
     private final MinioClient minioClient;
+
+    private final MusicService musicService;
+
+    private final UserService userService;
     @Value("${minio.bucketName}")
     private String bucketName;
 
@@ -38,8 +50,9 @@ public class MinioServiceImpl implements MinioService {
     }
 
     @Override
-    public Boolean uploadFile(String email, String uuid, MultipartFile file) {
+    public String uploadFile(String email, MultipartFile file) {
         var fileName = file.getOriginalFilename();
+        var uuid = UUID.randomUUID().toString().replace("-", "");
         assert fileName != null;
         try {
             minioClient.putObject(
@@ -52,9 +65,32 @@ public class MinioServiceImpl implements MinioService {
                             .build());
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "";
         }
-        return true;
+        var time = LocalDateTime.now();
+        musicService.insert(new Music() {{
+            setId(uuid);
+            setUploadEmail(email);
+            setGmt_create(time);
+            setGmt_modified(time);
+            setMusicName(fileName);
+        }});
+        var user = userService.findByEmail(email);
+        if (user == null) {
+            userService.insert(new User() {{
+                setGmt_create(time);
+                setGmt_modified(time);
+                setEmail(email);
+                setCapacity(5000000);
+                setUsedCapacity(0);
+                setMedias(Map.of(uuid, false));
+            }});
+        } else {
+            var newMedias = user.getMedias();
+            newMedias.put(uuid, false);
+            user.setMedias(newMedias);
+        }
+        return uuid;
     }
 
 }

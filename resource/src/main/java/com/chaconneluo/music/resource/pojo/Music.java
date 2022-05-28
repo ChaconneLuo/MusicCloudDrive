@@ -5,29 +5,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * @author ChaconneLuo
  */
 
 @Data
-@Document(collection =  "user")
-public class User {
+@Document(collection = "music")
+public class Music {
 
     @Id
     private String id;
 
-    private String email;
+    private String musicName;
 
-    private Integer capacity;
-
-    private Integer usedCapacity;
-
-    private Map<String, Boolean> medias;
+    private String uploadEmail;
 
     private LocalDateTime gmt_create;
 
     private LocalDateTime gmt_modified;
-
 }

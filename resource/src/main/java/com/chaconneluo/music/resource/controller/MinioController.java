@@ -1,6 +1,7 @@
 package com.chaconneluo.music.resource.controller;
 
 import com.chaconneluo.music.resource.service.MinioService;
+import com.chaconneluo.music.resource.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +16,13 @@ public class MinioController {
 
     private final MinioService minioService;
 
-    @PostMapping("/{email}/upload/{uuid}")
-    public void uploadFile(@PathVariable("email") String email, @PathVariable("uuid") String uuid, @RequestPart("any") MultipartFile[] mfs) {
+    private final UserService userService;
+
+    @PostMapping("/upload/{email}")
+    public void uploadFile(@PathVariable("email") String email, @RequestPart("any") MultipartFile[] mfs) {
         minioService.checkBucket();
         for (var file : mfs) {
-            minioService.uploadFile(email, uuid, file);
+            minioService.uploadFile(email, file);
         }
     }
 
