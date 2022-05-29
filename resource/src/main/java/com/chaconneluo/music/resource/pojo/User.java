@@ -20,9 +20,9 @@ public class User {
 
     private String email;
 
-    private Integer capacity;
+    private Long capacity;
 
-    private Integer usedCapacity;
+    private Long usedCapacity;
 
     private Map<String, Boolean> medias;
 
@@ -30,4 +30,12 @@ public class User {
 
     private LocalDateTime gmt_modified;
 
+    public User(String email, Long capacity, Long usedCapacity, Map<String, Boolean> medias, LocalDateTime gmt_create, LocalDateTime gmt_modified) {
+        this.email = email;
+        this.capacity = capacity;
+        this.usedCapacity = usedCapacity;
+        this.medias = medias;
+        this.gmt_create = gmt_create;
+        this.gmt_modified = gmt_modified;
+    }
 }

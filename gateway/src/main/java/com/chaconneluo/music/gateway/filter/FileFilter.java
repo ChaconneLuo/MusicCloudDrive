@@ -1,18 +1,17 @@
 package com.chaconneluo.music.gateway.filter;
 
-import com.chaconneluo.music.gateway.common.Const;
 import com.chaconneluo.music.gateway.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.annotation.WebFilter;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**
  * @author ChaconneLuo
@@ -20,7 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 @RequiredArgsConstructor
-public class AuthorizeFilter implements GlobalFilter, Ordered {
+@WebFilter("/file/**")
+public class FileFilter implements GlobalFilter, Ordered {
 
     private final SecurityService securityService;
 
@@ -32,25 +32,18 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         if (URIPath.contains("/account/register") || URIPath.contains("/account/login")) {
             return chain.filter(exchange);
         }
+        var email = (String) exchange.getAttribute("email");
 
-        var requestToken = request.getHeaders().getFirst(Const.TOKEN_COOKIE_NAME);
-        if (requestToken == null) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();
-        }
-        var token = securityService.verifyJWT(requestToken);
-        if (!token.equals("")) {
-            var cookie = ResponseCookie.from(Const.TOKEN_COOKIE_NAME, token).path("/").build();
-            response.addCookie(cookie);
-            exchange.getAttributes().put("email",securityService.decodeEmailFromJWT(token));
-            return chain.filter(exchange);
-        }
-        response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        return response.setComplete();
+        var newPath = URIPath + "/" + email;
+        var newRequest = request.mutate().path(newPath).build();
+        exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
+
+        return chain.filter(exchange.mutate()
+                .request(newRequest).build());
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 5;
     }
 }

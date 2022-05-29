@@ -10,7 +10,7 @@ spring:
       max-request-size: 1024MB
   data:
     mongodb:
-      uri: mongodb://localhost:27017/music_cloud_drive?authSource=admin
+      uri: mongodb://admin:plf,.123@localhost:27017/music_cloud_drive?authSource=admin
 minio:
   endpoint: http://localhost:9000
   accessKey: minioadmin

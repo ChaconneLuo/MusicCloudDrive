@@ -68,27 +68,27 @@ public class MinioServiceImpl implements MinioService {
             return "";
         }
         var time = LocalDateTime.now();
-        musicService.insert(new Music() {{
-            setId(uuid);
-            setUploadEmail(email);
-            setGmt_create(time);
-            setGmt_modified(time);
-            setMusicName(fileName);
-        }});
+        musicService.insert(new Music(uuid,
+                fileName,
+                email,
+                file.getSize(),
+                time,
+                time));
         var user = userService.findByEmail(email);
         if (user == null) {
-            userService.insert(new User() {{
-                setGmt_create(time);
-                setGmt_modified(time);
-                setEmail(email);
-                setCapacity(5000000);
-                setUsedCapacity(0);
-                setMedias(Map.of(uuid, false));
-            }});
+            userService.insert(new User(email,
+                    5000000L,
+                    file.getSize(),
+                    Map.of(uuid, false),
+                    time,
+                    time));
         } else {
             var newMedias = user.getMedias();
+            var usedCapacity = user.getUsedCapacity() + file.getSize();
             newMedias.put(uuid, false);
             user.setMedias(newMedias);
+            user.setUsedCapacity(usedCapacity);
+            userService.update(user);
         }
         return uuid;
     }
