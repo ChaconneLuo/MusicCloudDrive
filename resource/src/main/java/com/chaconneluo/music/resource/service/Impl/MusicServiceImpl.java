@@ -26,6 +26,11 @@ public class MusicServiceImpl implements MusicService {
         return musicDao.findById(id);
     }
 
+    @Override
+    public Music deleteById(String id) {
+        return null;
+    }
+
     public List<Music> findByEmail(String email) {
         return musicDao.findByEmail(email);
     }

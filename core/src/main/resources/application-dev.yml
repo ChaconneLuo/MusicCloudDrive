@@ -6,4 +6,4 @@ spring:
     name: core-service
   data:
     mongodb:
-      uri: mongodb://localhost:27017/music_cloud_drive
+      uri: mongodb://admin:plf,.123@localhost:27017/music_cloud_drive_music_sheet?authSource=admin

@@ -1,7 +1,6 @@
 package com.chaconneluo.music.resource.dao;
 
 import com.chaconneluo.music.resource.pojo.Music;
-import com.chaconneluo.music.resource.pojo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,5 +34,11 @@ public class MusicDao {
             query.addCriteria(queryCriteria);
         }
         return mongoTemplate.find(query, Music.class);
+    }
+
+    public Music deleteById(String id) {
+        var music = findById(id);
+        mongoTemplate.remove(music);
+        return music;
     }
 }

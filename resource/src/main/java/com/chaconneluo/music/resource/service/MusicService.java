@@ -10,5 +10,7 @@ public interface MusicService {
 
     Music findById(String id);
 
+    Music deleteById(String id);
+
     List<Music> findByEmail(String email);
 }

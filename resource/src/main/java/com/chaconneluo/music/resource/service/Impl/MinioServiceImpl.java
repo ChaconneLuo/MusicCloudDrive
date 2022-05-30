@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,19 +56,6 @@ public class MinioServiceImpl implements MinioService {
         var fileName = file.getOriginalFilename();
         var uuid = UUID.randomUUID().toString().replace("-", "");
         assert fileName != null;
-        try {
-            minioClient.putObject(
-                    PutObjectArgs
-                            .builder()
-                            .bucket(bucketName)
-                            .object(uuid)
-                            .stream(file.getInputStream(), file.getSize(), -1)
-                            .contentType(file.getContentType())
-                            .build());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
         var time = LocalDateTime.now();
         musicService.insert(new Music(uuid,
                 fileName,
@@ -84,13 +73,56 @@ public class MinioServiceImpl implements MinioService {
                     time));
         } else {
             var newMedias = user.getMedias();
-            var usedCapacity = user.getUsedCapacity() + file.getSize();
-            newMedias.put(uuid, false);
-            user.setMedias(newMedias);
-            user.setUsedCapacity(usedCapacity);
-            userService.update(user);
+            if (user.getUsedCapacity() + file.getSize() <= user.getCapacity()) {
+                var usedCapacity = user.getUsedCapacity() + file.getSize();
+                newMedias.put(uuid, false);
+                user.setMedias(newMedias);
+                user.setUsedCapacity(usedCapacity);
+                userService.update(user);
+            } else {
+                musicService.deleteById(uuid);
+                return "";
+            }
+        }
+        try {
+            minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(uuid).stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
         return uuid;
     }
+
+    @Override
+    public Map<String, String> getAllPublicFile(String email) {
+        var user = userService.findByEmail(email);
+        var userMedias = user.getMedias();
+        var publicUUIDList = new ArrayList<String>();
+        userMedias.forEach((k, v) -> {
+            if (v.equals(true)) {
+                publicUUIDList.add(k);
+            }
+        });
+        var userPublicMedia = new HashMap<String, String>();
+        for (var uuid : publicUUIDList) {
+            var music = musicService.findById(uuid);
+            userPublicMedia.put(uuid, music.getMusicName());
+        }
+        return userPublicMedia;
+    }
+
+    @Override
+    public Map<String, String> getAllFile(String email) {
+        var user = userService.findByEmail(email);
+        var userMedias = user.getMedias();
+        var userAllMedia = new HashMap<String, String>();
+        for (var entry : userMedias.entrySet()) {
+            var uuid = entry.getKey();
+            var music = musicService.findById(uuid);
+            userAllMedia.put(uuid, music.getMusicName());
+        }
+        return userAllMedia;
+    }
+
 
 }

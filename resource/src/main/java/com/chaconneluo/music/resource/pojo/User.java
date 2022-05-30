@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +26,12 @@ public class User {
     private Long usedCapacity;
 
     private Map<String, Boolean> medias;
+
+
+    private List<String> musicSheet;
+
+
+    private List<String> collectMusicSheet;
 
     private LocalDateTime gmt_create;
 

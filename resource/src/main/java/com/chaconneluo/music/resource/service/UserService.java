@@ -12,13 +12,11 @@ public interface UserService {
 
     User deleteById(String id);
 
-
     User update(User user);
 
     User findByEmail(String email);
 
     List<User> getAllUsers();
-
 
     Map<String, Object> querySongList(String email, int page, int size);
 }

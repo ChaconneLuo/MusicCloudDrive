@@ -25,7 +25,7 @@ spring:
         - id: resource-api
           uri: lb://resource-service
           predicates:
-            - Path=/file/**
+            - Path=/file/** ,/get/**
 logging:
   level:
     org.springframework.cloud.gateway: trace
