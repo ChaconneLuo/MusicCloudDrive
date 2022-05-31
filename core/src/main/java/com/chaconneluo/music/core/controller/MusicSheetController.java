@@ -1,14 +1,11 @@
 package com.chaconneluo.music.core.controller;
 
+import com.chaconneluo.music.core.common.MsgMapping;
 import com.chaconneluo.music.core.pojo.MusicSheet;
 import com.chaconneluo.music.core.service.MusicSheetService;
 import com.chaconneluo.music.core.util.Result;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,7 +13,7 @@ import java.util.List;
  * @author ChaconneLuo
  */
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/sheet")
 public class MusicSheetController {
@@ -34,7 +31,12 @@ public class MusicSheetController {
     public Result<Void> AddMusicToSheet(@PathVariable("email") String email,
                                         @RequestParam(value = "sheet") List<String> uuids,
                                         @PathVariable("sheet_uuid") String sheetUUID) {
-        return null;
+        var musicSheet = musicSheetService.addMusic(email, uuids, sheetUUID);
+        if (musicSheet == null) {
+            return Result.error(MsgMapping.MUSIC_SHEET_NOT_FOUND);
+        } else {
+            return Result.ok().build();
+        }
     }
 
 }

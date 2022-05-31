@@ -35,4 +35,21 @@ public class MusicSheetServiceImpl implements MusicSheetService {
         musicSheetDao.insert(musicSheet);
         return musicSheet;
     }
+
+    @Override
+    public MusicSheet addMusic(String email, List<String> uuids, String sheetUUID) {
+        var musicSheet = musicSheetDao.findById(sheetUUID);
+        if (uuids != null) {
+            var musicsNameMap = resourceClient.getMusicsName(uuids);
+            var medias = musicSheet.getMedias();
+            medias.putAll(musicsNameMap);
+            musicSheet.setMedias(medias);
+        }else {
+            return null;
+        }
+        var time = LocalDateTime.now();
+        musicSheet.setGmt_modified(time);
+        musicSheetDao.insert(musicSheet);
+        return musicSheet;
+    }
 }
