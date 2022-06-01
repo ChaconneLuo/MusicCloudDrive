@@ -17,7 +17,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/info")
-public class SheetInfoController {
+public class MusicInfoController {
 
     private final MusicService musicService;
 

@@ -1,10 +1,9 @@
 package com.chaconneluo.music.resource.service.Impl;
 
+import com.chaconneluo.music.resource.client.CoreClient;
 import com.chaconneluo.music.resource.pojo.Music;
-import com.chaconneluo.music.resource.pojo.User;
 import com.chaconneluo.music.resource.service.MinioService;
 import com.chaconneluo.music.resource.service.MusicService;
-import com.chaconneluo.music.resource.service.UserService;
 import io.minio.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -29,7 +25,7 @@ public class MinioServiceImpl implements MinioService {
 
     private final MusicService musicService;
 
-    private final UserService userService;
+    private final CoreClient coreClient;
     @Value("${minio.bucketName}")
     private String bucketName;
 
@@ -57,72 +53,22 @@ public class MinioServiceImpl implements MinioService {
         var uuid = UUID.randomUUID().toString().replace("-", "");
         assert fileName != null;
         var time = LocalDateTime.now();
-        musicService.insert(new Music(uuid,
-                fileName,
-                email,
-                file.getSize(),
-                time,
-                time));
-        var user = userService.findByEmail(email);
-        if (user == null) {
-            userService.insert(new User(email,
-                    5000000L,
+        var insertResult = coreClient.addMusic(email, uuid, file.getSize());
+        if (!insertResult.failed()) {
+            musicService.insert(new Music(uuid,
+                    fileName,
+                    email,
                     file.getSize(),
-                    Map.of(uuid, false),
                     time,
                     time));
-        } else {
-            var newMedias = user.getMedias();
-            if (user.getUsedCapacity() + file.getSize() <= user.getCapacity()) {
-                var usedCapacity = user.getUsedCapacity() + file.getSize();
-                newMedias.put(uuid, false);
-                user.setMedias(newMedias);
-                user.setUsedCapacity(usedCapacity);
-                userService.update(user);
-            } else {
-                musicService.deleteById(uuid);
+            try {
+                minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(uuid).stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build());
+            } catch (Exception e) {
+                e.printStackTrace();
                 return "";
             }
+            return uuid;
         }
-        try {
-            minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(uuid).stream(file.getInputStream(), file.getSize(), -1).contentType(file.getContentType()).build());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-        return uuid;
+        return "";
     }
-
-    @Override
-    public Map<String, String> getAllPublicFile(String email) {
-        var user = userService.findByEmail(email);
-        var userMedias = user.getMedias();
-        var publicUUIDList = new ArrayList<String>();
-        userMedias.forEach((k, v) -> {
-            if (v.equals(true)) {
-                publicUUIDList.add(k);
-            }
-        });
-        var userPublicMedia = new HashMap<String, String>();
-        for (var uuid : publicUUIDList) {
-            var music = musicService.findById(uuid);
-            userPublicMedia.put(uuid, music.getMusicName());
-        }
-        return userPublicMedia;
-    }
-
-    @Override
-    public Map<String, String> getAllFile(String email) {
-        var user = userService.findByEmail(email);
-        var userMedias = user.getMedias();
-        var userAllMedia = new HashMap<String, String>();
-        for (var entry : userMedias.entrySet()) {
-            var uuid = entry.getKey();
-            var music = musicService.findById(uuid);
-            userAllMedia.put(uuid, music.getMusicName());
-        }
-        return userAllMedia;
-    }
-
-
 }

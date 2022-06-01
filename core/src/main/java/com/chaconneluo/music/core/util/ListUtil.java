@@ -1,4 +1,4 @@
-package com.chaconneluo.music.resource.util;
+package com.chaconneluo.music.core.util;
 
 import java.util.ArrayList;
 import java.util.List;

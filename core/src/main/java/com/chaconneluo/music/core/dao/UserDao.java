@@ -1,6 +1,6 @@
-package com.chaconneluo.music.resource.dao;
+package com.chaconneluo.music.core.dao;
 
-import com.chaconneluo.music.resource.pojo.User;
+import com.chaconneluo.music.core.pojo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

@@ -1,4 +1,4 @@
-package com.chaconneluo.music.resource.pojo;
+package com.chaconneluo.music.core.pojo;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -27,9 +27,7 @@ public class User {
 
     private Map<String, Boolean> medias;
 
-
     private List<String> musicSheet;
-
 
     private List<String> collectMusicSheet;
 

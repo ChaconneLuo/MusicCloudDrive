@@ -1,15 +1,15 @@
-package com.chaconneluo.music.resource.service.Impl;
+package com.chaconneluo.music.core.service.Impl;
 
-import com.chaconneluo.music.resource.dao.UserDao;
-import com.chaconneluo.music.resource.pojo.User;
-import com.chaconneluo.music.resource.service.UserService;
-import com.chaconneluo.music.resource.util.ListUtil;
+import com.chaconneluo.music.core.client.ResourceClient;
+import com.chaconneluo.music.core.dao.UserDao;
+import com.chaconneluo.music.core.pojo.User;
+import com.chaconneluo.music.core.service.UserService;
+import com.chaconneluo.music.core.util.ListUtil;
 import com.mongodb.client.MongoClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final MongoClient mongoClient;
+
+    private final ResourceClient resourceClient;
 
     private final UserDao userDao;
 
@@ -68,6 +70,26 @@ public class UserServiceImpl implements UserService {
         map.put("total", entryList.size());
 
         return map;
+    }
+
+    @Override
+    public Map<String, String> getAllPublicFile(String email) {
+        var user = this.findByEmail(email);
+        var userMedias = Objects.requireNonNullElse(user.getMedias(), new HashMap<String, String>());
+        var publicUUIDList = new ArrayList<String>();
+        userMedias.forEach((k, v) -> {
+            if (v.equals(true)) {
+                publicUUIDList.add(k);
+            }
+        });
+        return resourceClient.getMusicsName(publicUUIDList);
+    }
+
+    @Override
+    public Map<String, String> getAllFile(String email) {
+        var user = this.findByEmail(email);
+        var userMedias = Objects.requireNonNullElse(user.getMedias(), new HashMap<String, String>());
+        return resourceClient.getMusicsName(userMedias.keySet().stream().toList());
     }
 
 }
