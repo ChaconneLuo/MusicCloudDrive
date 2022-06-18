@@ -28,10 +28,22 @@ public class MusicSheetController {
     }
 
     @PostMapping("/add/{email}/{sheet_uuid}")
-    public Result<Void> AddMusicToSheet(@PathVariable("email") String email,
+    public Result<Void> addMusicToSheet(@PathVariable("email") String email,
                                         @RequestParam(value = "sheet") List<String> uuids,
                                         @PathVariable("sheet_uuid") String sheetUUID) {
         var musicSheet = musicSheetService.addMusic(email, uuids, sheetUUID);
+        if (musicSheet == null) {
+            return Result.error(MsgMapping.MUSIC_SHEET_NOT_FOUND);
+        } else {
+            return Result.ok().build();
+        }
+    }
+
+    @PostMapping("/delete/{email}/{sheet_uuid}")
+    public Result<Void> deleteMusicFromSheet(@PathVariable("email") String email,
+                                           @RequestParam(value = "sheet") List<String> uuids,
+                                           @PathVariable("sheet_uuid") String sheetUUID) {
+        var musicSheet = musicSheetService.delMusicFromSheet(email, uuids, sheetUUID);
         if (musicSheet == null) {
             return Result.error(MsgMapping.MUSIC_SHEET_NOT_FOUND);
         } else {

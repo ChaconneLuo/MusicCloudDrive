@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 @DS("secret_key")
-public interface SeckeyDao extends BaseMapper<SecretKey> {
+public interface SecretKeyDao extends BaseMapper<SecretKey> {
 }
