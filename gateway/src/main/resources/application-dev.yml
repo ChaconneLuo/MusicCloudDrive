@@ -5,7 +5,7 @@ spring:
   application:
     name: gateway-service
   datasource:
-    url: jdbc:mysql:///music_cloud_drive_seckey
+    url: jdbc:mysql:///music_cloud_drive_secret_key
     username: root
     password: plf,.123
   cloud:
@@ -26,6 +26,10 @@ spring:
           uri: lb://resource-service
           predicates:
             - Path=/file/** ,/get/**
+        - id: core-api
+          uri: lb://core-service
+          predicates:
+            - Path=/sheet/** ,/user/**
 logging:
   level:
     org.springframework.cloud.gateway: trace

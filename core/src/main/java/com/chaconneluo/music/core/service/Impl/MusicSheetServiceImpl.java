@@ -67,7 +67,21 @@ public class MusicSheetServiceImpl implements MusicSheetService {
         }
         var time = LocalDateTime.now();
         musicSheet.setGmt_modified(time);
-        musicSheetDao.insert(musicSheet);
+        musicSheetDao.update(musicSheet);
         return musicSheet;
+    }
+
+    @Override
+    public Boolean shareSheet(String email, String sheetUUID) {
+        var musicSheet = musicSheetDao.findById(sheetUUID);
+        if (musicSheet != null) {
+            musicSheet.setMusicSheetPublic(true);
+        } else {
+            return false;
+        }
+        var time = LocalDateTime.now();
+        musicSheet.setGmt_modified(time);
+        musicSheetDao.update(musicSheet);
+        return true;
     }
 }

@@ -2,8 +2,8 @@ package com.chaconneluo.music.gateway.filter;
 
 import com.chaconneluo.music.gateway.service.SecurityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -20,7 +20,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 @Component
 @RequiredArgsConstructor
 @WebFilter("/file/**")
-public class FileFilter implements GlobalFilter, Ordered {
+public class FileFilter implements GatewayFilter, Ordered {
 
     private final SecurityService securityService;
 

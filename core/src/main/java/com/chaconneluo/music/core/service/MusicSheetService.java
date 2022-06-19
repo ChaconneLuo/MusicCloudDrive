@@ -10,4 +10,6 @@ public interface MusicSheetService {
     MusicSheet addMusic(String email, List<String> uuids, String sheetUUID);
 
     MusicSheet delMusicFromSheet(String email, List<String> uuids, String sheetUUID);
+
+    Boolean shareSheet(String email, String sheetUUID);
 }

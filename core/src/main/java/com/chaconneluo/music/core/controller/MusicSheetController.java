@@ -41,14 +41,26 @@ public class MusicSheetController {
 
     @PostMapping("/delete/{email}/{sheet_uuid}")
     public Result<Void> deleteMusicFromSheet(@PathVariable("email") String email,
-                                           @RequestParam(value = "sheet") List<String> uuids,
-                                           @PathVariable("sheet_uuid") String sheetUUID) {
+                                             @RequestParam(value = "sheet") List<String> uuids,
+                                             @PathVariable("sheet_uuid") String sheetUUID) {
         var musicSheet = musicSheetService.delMusicFromSheet(email, uuids, sheetUUID);
         if (musicSheet == null) {
             return Result.error(MsgMapping.MUSIC_SHEET_NOT_FOUND);
         } else {
             return Result.ok().build();
         }
+    }
+
+    @PostMapping("/share/{email}/{sheet_uuid}")
+    public Result<String> shareSheet(@PathVariable("email") String email,
+                                     @PathVariable("sheet_uuid") String sheetUUID) {
+        var shareSuccess = musicSheetService.shareSheet(email, sheetUUID);
+        if (shareSuccess) {
+            return Result.ok("/addSharedSheet/" + sheetUUID);
+        } else {
+            return Result.error().build();
+        }
+
     }
 
 }
